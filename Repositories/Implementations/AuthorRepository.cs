@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AspNetCoreExerciseProject.Data;
 using AspNetCoreExerciseProject.Models;
 using AspNetCoreExerciseProject.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace AspNetCoreExerciseProject.Repositories.Implementations
 {
@@ -16,24 +17,32 @@ namespace AspNetCoreExerciseProject.Repositories.Implementations
         {
             _context = context;
         }
-        public async Task<IEnumerable<Author>> GetAll()
+        public IQueryable<Author> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.Authors;
         }
 
         public async Task<Author> Get(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Authors
+                .Include(a => a.BookAuthors)
+                .ThenInclude(ba => ba.Author)
+                .FirstOrDefaultAsync(i => i.Id == id);
         }
 
-        public async Task<Author> Save(Author entity)
+        public void Save(Author entity)
         {
-            throw new NotImplementedException();
+            _context.Entry(entity).State = EntityState.Modified;
+        }
+
+        public async Task Add(Author entity)
+        {
+            await _context.AddAsync(entity);
         }
 
         public async Task<int> Commit()
         {
-            throw new NotImplementedException();
+            return await _context.SaveChangesAsync();
         }
     }
 }

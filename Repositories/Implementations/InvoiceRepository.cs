@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AspNetCoreExerciseProject.Data;
 using AspNetCoreExerciseProject.Models;
 using AspNetCoreExerciseProject.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace AspNetCoreExerciseProject.Repositories.Implementations
 {
@@ -16,24 +17,32 @@ namespace AspNetCoreExerciseProject.Repositories.Implementations
         {
             _context = context;
         }
-        public async Task<IEnumerable<Invoice>> GetAll()
+        public IQueryable<Invoice> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.Invoices;
         }
 
         public async Task<Invoice> Get(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Invoices
+                .Include(i => i.LineItems)
+                .ThenInclude(li => li.Book)
+                .FirstOrDefaultAsync(i => i.Id == id);
         }
 
-        public async Task<Invoice> Save(Invoice entity)
+        public void Save(Invoice entity)
         {
-            throw new NotImplementedException();
+            _context.Entry(entity).State = EntityState.Modified;
+        }
+
+        public async Task Add(Invoice entity)
+        {
+            await _context.AddAsync(entity);
         }
 
         public async Task<int> Commit()
         {
-            throw new NotImplementedException();
+            return await _context.SaveChangesAsync();
         }
     }
 }

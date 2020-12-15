@@ -8,11 +8,13 @@ namespace AspNetCoreExerciseProject.Repositories.Interfaces
     public interface ICrudRepository<T>
     {
         //  GetAll
-        Task<IEnumerable<T>> GetAll();
+        IQueryable<T> GetAll();
         //  GetById
         Task<T> Get(int id);
         //  Save
-        Task<T> Save(T entity);
+        void Save(T entity);
+        //  Add
+        Task Add(T entity);
         //  Commit
         Task<int> Commit();
     }
