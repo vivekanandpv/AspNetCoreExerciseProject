@@ -15,5 +15,7 @@ namespace AspNetCoreExerciseProject.Models
         public decimal Price { get; set; }
 
         public ICollection<BookAuthor> BookAuthors { get; set; }
+        public ICollection<LineItem> LineItems { get; set; }
+        public ICollection<ShoppingCartLine> ShoppingCartLines { get; set; }
     }
 }
